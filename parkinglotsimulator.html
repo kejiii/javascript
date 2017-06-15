@@ -2,71 +2,86 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>Parking Lot Simulator</title>
 	<script>
-		var myParkingLot = null;
-		var makes = ['ford','chevy','jeep','bmw','toyota', 'ferrari', 'lamborghini', 'bugatti', 'nissan', 'infinit', 'buick', 'gmc', 'dodge', 'mazda', 'hyundai', 'cadillac', 'jaguar', 'mercedes benz', 'audi', 'tesla', 'subaru'];
+		var simulator = (function(){	
+			var myParkingLot = null;
 
-	 	var Space = function(position) {
-			this.position = position;
-			this.carInSpace = null;
-		}
-
-		var ParkingLot = function(numberOfSpaces) {
-			this.spaces = [];
-
-			for(i = 0; i < numberOfSpaces; i++){
-				this.spaces.push(new Space(i));
+			// utility functions
+		 	var getRandomInt = function(min, max) {
+			    return Math.floor(Math.random() * (max - min + 1)) + min;
 			}
-		}
 
-		var Car = function(make, timeInLot) {
-			this.timeInLot = timeInLot;
-			this.make = make;
-			this.park = function(indexOfSpace) {
-				window.setTimeout(function() {
-					myParkingLot.spaces[indexOfSpace].carInSpace = null;
-					console.log('Car just left parking space ' + indexOfSpace + '.');
-				}, this.timeInLot, indexOfSpace);
+			var getRandomArbitrary = function(min, max) {
+			    var result = Math.random() * (max - min) + min;
+			    return Math.round(result);
 			}
-		}
 
-		var getThisShizStarted = function(numberOfSpaces) {
-			var timeInLot, randomMake, myCar;
-			myParkingLot = new ParkingLot(numberOfSpaces);
+			// classes
+		 	var Space = function(position) {
+				this.position = position;
+				this.carInSpace = null;
+			}
 
-			setInterval(function() {
+			var ParkingLot = function(numberOfSpaces) {
+				this.spaces = [];
 
-				// loop through parking lot spaces
-				for (i = 0; i < myParkingLot.spaces.length; i++){
-
-					// see if there are any available spots in the parking lot
-					if(myParkingLot.spaces[i].carInSpace == null){
-
-						timeInLot = getRandomInt(1000, 60000);
-						randomMake = makes[getRandomArbitrary(0, (makes.length - 1))];
-						myCar = new Car(randomMake, timeInLot);
-
-						// let's park the car
-						console.log('Found an open space ' + i + ' for ', myCar);
-						myParkingLot.spaces[i].carInSpace = myCar;
-						myCar.park(i);
-						break;
-					}
+				for(i = 0; i < numberOfSpaces; i++){
+					this.spaces.push(new Space(i));
 				}
-			}, 200);
-		}
+			}
 
-		function getRandomInt(min, max) {
-		    return Math.floor(Math.random() * (max - min + 1)) + min;
-		}
+			var Car = function(make, timeInLot) {
+				this.timeInLot = timeInLot;
+				this.make = make;
+				this.park = function(indexOfSpace) {
 
-		function getRandomArbitrary(min, max) {
-		    var result = Math.random() * (max - min) + min;
-		    return Math.round(result);
-		}
+					// let's set a timeout so we can unpark the car after a specified time
+					window.setTimeout(function() {
 
-		getThisShizStarted(20);
+						// unpark the car
+						myParkingLot.spaces[indexOfSpace].carInSpace = null;
+						console.log('Car just left parking space ' + indexOfSpace + '.');
+						
+					}, this.timeInLot, indexOfSpace);
+				}
+			}
+
+			var run = function(numberOfSpaces) {
+				var timeInLot, randomMake, myCar;
+				var makes = ['ford','chevy','jeep','bmw','toyota', 'ferrari', 'lamborghini', 'bugatti', 'nissan', 'infiniti', 'buick', 'gmc', 'dodge', 'mazda', 'hyundai', 'cadillac', 'jaguar', 'mercedes benz', 'audi', 'tesla', 'subaru'];
+				
+				// let's create a new parking lot
+				myParkingLot = new ParkingLot(numberOfSpaces);
+
+				setInterval(function() {
+
+					// loop through parking lot spaces
+					for (i = 0; i < myParkingLot.spaces.length; i++){
+
+						// see if there are any available space in the parking lot
+						if(myParkingLot.spaces[i].carInSpace == null){
+
+							// let's create a car to park in the space
+							timeInLot = getRandomInt(1000, 60000);
+							randomMake = makes[getRandomArbitrary(0, (makes.length - 1))];
+							myCar = new Car(randomMake, timeInLot);
+
+							// now, let's park the car
+							console.log('Found an open space ' + i + ' for ', myCar);
+							myParkingLot.spaces[i].carInSpace = myCar;
+							myCar.park(i);
+							break;
+						}
+					}
+				}, 200);
+			}
+
+			return {
+				myParkingLot: myParkingLot,
+				run: run
+			};
+		}());	
 	</script>
 </head>
 <body>
