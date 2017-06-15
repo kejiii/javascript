@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script>
+		var myParkingLot = null;
+		var makes = ['ford','chevy','jeep','bmw','toyota', 'ferrari', 'lamborghini', 'bugatti', 'nissan', 'infinit', 'buick', 'gmc', 'dodge', 'mazda', 'hyundai', 'cadillac', 'jaguar', 'mercedes benz', 'audi', 'tesla', 'subaru'];
+
+	 	var Space = function(position) {
+			this.position = position;
+			this.carInSpace = null;
+		}
+
+		var ParkingLot = function(numberOfSpaces) {
+			this.spaces = [];
+
+			for(i = 0; i < numberOfSpaces; i++){
+				this.spaces.push(new Space(i));
+			}
+		}
+
+		var Car = function(make, timeInLot) {
+			this.timeInLot = timeInLot;
+			this.make = make;
+			this.park = function(indexOfSpace) {
+				window.setTimeout(function() {
+					myParkingLot.spaces[indexOfSpace].carInSpace = null;
+					console.log('Car just left parking space ' + indexOfSpace + '.');
+				}, this.timeInLot, indexOfSpace);
+			}
+		}
+
+		var getThisShizStarted = function(numberOfSpaces) {
+			var timeInLot, randomMake, myCar;
+			myParkingLot = new ParkingLot(numberOfSpaces);
+
+			setInterval(function() {
+
+				// loop through parking lot spaces
+				for (i = 0; i < myParkingLot.spaces.length; i++){
+
+					// see if there are any available spots in the parking lot
+					if(myParkingLot.spaces[i].carInSpace == null){
+
+						timeInLot = getRandomInt(1000, 60000);
+						randomMake = makes[getRandomArbitrary(0, (makes.length - 1))];
+						myCar = new Car(randomMake, timeInLot);
+
+						// let's park the car
+						console.log('Found an open space ' + i + ' for ', myCar);
+						myParkingLot.spaces[i].carInSpace = myCar;
+						myCar.park(i);
+						break;
+					}
+				}
+			}, 200);
+		}
+
+		function getRandomInt(min, max) {
+		    return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+
+		function getRandomArbitrary(min, max) {
+		    var result = Math.random() * (max - min) + min;
+		    return Math.round(result);
+		}
+
+		getThisShizStarted(20);
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
