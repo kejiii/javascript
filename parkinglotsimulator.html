@@ -84,8 +84,6 @@
         var start = function(numberOfSpaces) {
         	console.log("Simulator started.");
 
-        	console.log(numberOfSpaces);
-
         	if (numberOfSpaces == undefined){
         		console.error("You need to run Simulator.Start(); by passing in a number of cars to run. EX: Simulator.Start(10);");
         	}
@@ -99,6 +97,7 @@
         }
 
         var stop = function() {
+        	
             if (intervalId != null)
                 window.clearInterval(intervalId);
 
